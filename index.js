@@ -1,65 +1,3 @@
-const express = require('express');
-const app = express();
-const PORT = 3000;
-
-// Middleware to parse JSON data
-app.use(express.json());
-
-// Sample route
-app.get('/', (req, res) => {
-    res.send('Welcome to the REST API!');
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-const books = [
-    { id: 1, title: "Book One", author: "Author One" },
-    { id: 2, title: "Book Two", author: "Author Two" },
-];
-
-// GET all books
-app.get('/api/books', (req, res) => {
-    res.json(books);
-});
-
-
-//POST
-app.post('/api/books', (req, res) => {
-    const newBook = {
-        id: books.length + 1,
-        title: req.body.title,
-        author: req.body.author,
-    };
-    books.push(newBook);
-    res.status(201).json(newBook);
-});
-
-
-
-//UPDATE
-app.put('/api/books/:id', (req, res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id));
-    if (!book) return res.status(404).send('Book not found');
-
-    book.title = req.body.title;
-    book.author = req.body.author;
-    res.json(book);
-});
-
-//DELETE
-
-app.delete('/api/books/:id', (req, res) => {
-    const bookIndex = books.findIndex(b => b.id === parseInt(req.params.id));
-    if (bookIndex === -1) return res.status(404).send('Book not found');
-
-    const deletedBook = books.splice(bookIndex, 1);
-    res.json(deletedBook);
-});
-
-
 
 ////////////////////////////////       Adding the Database   /////////////////////////////////
 
@@ -96,4 +34,60 @@ app.get('/', (req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+//////////////////////////////          Crud Operations  ///////////////////////////////
+
+
+
+app.get('/api/books', (req, res) => {
+    const query = 'SELECT * FROM books';
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+
+
+//SAVE A BOOK
+app.post('/api/books', (req, res) => {
+    const { title, author } = req.body;
+    const query = 'INSERT INTO books (title, author) VALUES (?, ?)';
+    db.query(query, [title, author], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        // Respond with the newly created book
+        res.status(201).json({ id: result.insertId, title, author });
+    });
+});
+
+
+
+//UPDATE A BOOK
+app.put('/api/books/:id', (req, res) => {
+    const { id } = req.params;
+    const { title, author } = req.body;
+    const query = 'UPDATE books SET title = ?, author = ? WHERE id = ?';
+    db.query(query, [title, author, id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (result.affectedRows === 0) return res.status(404).send('Book not found');
+
+        res.json({ id, title, author });
+    });
+});
+
+
+
+// DELETE  A BOOK
+app.delete('/api/books/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM books WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (result.affectedRows === 0) return res.status(404).send('Book not found');
+
+        res.json({ message: `Book with id ${id} deleted successfully` });
+    });
 });
