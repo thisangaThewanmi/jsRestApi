@@ -1,9 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
 // Middleware to parse JSON data
 app.use(express.json());
+
+
+// Use CORS middleware
+app.use(cors());
 
 // Import the books routes
 const booksRoutes = require('./routes/bookRoutes.js');
