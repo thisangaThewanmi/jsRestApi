@@ -1,0 +1,14 @@
+
+Mulinma proj ekaka hada ganna
+
+next eke terminal eka athule Run npm init -y to create a package.json file with default settings.
+
+to install express npm install express - this creates out package-lock.json and node_modules
+node module eka athule tiyenne dependencies java wldi wagenm maven dep save wenne lap eke m2. kiyana folder eka athule
+
+run - npm start to run the project
+
+//There was a prob here in package.json there is a script tag and to run the proj through npm inatall this must be there - "start": "node index.js" this was not present so we needed to add it
+
+
+
