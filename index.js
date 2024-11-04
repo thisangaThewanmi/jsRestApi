@@ -58,3 +58,42 @@ app.delete('/api/books/:id', (req, res) => {
     const deletedBook = books.splice(bookIndex, 1);
     res.json(deletedBook);
 });
+
+
+
+////////////////////////////////       Adding the Database   /////////////////////////////////
+
+const express = require('express');
+const mysql = require('mysql2');
+const app = express();
+const PORT = 3000;
+
+// Middleware to parse JSON data
+app.use(express.json());
+
+// MySQL database connection
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',       // Replace with your MySQL username
+    password: 'Ijse@1234',   // Replace with your MySQL password
+    database: 'books_db'
+});
+
+// Connect to the database
+db.connect((err) => {
+    if (err) {
+        console.error('Database connection failed:', err.stack);
+        return;
+    }
+    console.log('Connected to MySQL database.');
+});
+
+// Sample route
+app.get('/', (req, res) => {
+    res.send('Welcome to the REST API!');
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});

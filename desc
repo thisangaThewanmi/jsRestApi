@@ -11,4 +11,14 @@ run - npm start to run the project
 //There was a prob here in package.json there is a script tag and to run the proj through npm inatall this must be there - "start": "node index.js" this was not present so we needed to add it
 
 
+// Code the end points
+
+/------------------------------------ connecting mysql----------------------------------------/
+
+To add the dependncy run - npm install mysql2
+
+create the db in your computer
+
+Adjust the code by adding your db username and password
+
 
